@@ -2,6 +2,9 @@ import os
 import networkx as nx
 import numpy as np
 from tabulate import tabulate
+from concurrent.futures import ProcessPoolExecutor, as_completed
+
+RESULTS_FILE = "results.txt"
 
 def read_graph_from_file(file_path):
     print(f"Reading graph from file: {file_path}")
@@ -29,13 +32,13 @@ def calculate_z_scores(graph, random_graphs):
     return closeness_centrality_z, betweenness_centrality_z, clustering_coefficient_z
 
 def generate_random_graphs(graph, num_graphs=10):
-    print("Generating random graphs...")
+    print(f"Generating {num_graphs} random graphs...")
     random_graphs = {'closeness': [], 'betweenness': [], 'clustering': []}
     
     for i in range(num_graphs):
-        random_graph = nx.erdos_renyi_graph(len(graph.nodes), p=0.1)
-        random_graphs['closeness'].append(np.mean(list(nx.closeness_centrality(random_graph).values())))
-        random_graphs['betweenness'].append(np.mean(list(nx.betweenness_centrality(random_graph).values())))
+        random_graph = nx.gnm_random_graph(len(graph.nodes), len(graph.edges))
+        random_graphs['closeness'].append(list(nx.closeness_centrality(random_graph).values()))
+        random_graphs['betweenness'].append(list(nx.betweenness_centrality(random_graph).values()))
         random_graphs['clustering'].append(nx.average_clustering(random_graph))
         print(f"Generated random graph {i + 1}/{num_graphs}")
 
@@ -45,36 +48,45 @@ def save_results_to_file(results):
     print("\nResults Table:")
     print(tabulate(results, headers="keys", tablefmt="grid"))  # Change "grid" to "pipe" or "plain" for different styles
 
-    with open("results.txt", "w") as file:
+    with open(RESULTS_FILE, "a") as file:
         file.write(tabulate(results, headers="keys", tablefmt="pipe"))
+        file.write("\n\n")
+
+def analyze_file(file_path):
+    graph = read_graph_from_file(file_path)
+    avg_closeness, avg_betweenness, global_clustering = calculate_metrics(graph)
+
+    # Generate 10 random graphs for each graph
+    random_graphs = generate_random_graphs(graph, num_graphs=10)
+
+    closeness_z, betweenness_z, clustering_z = calculate_z_scores(graph, random_graphs)
+
+    result = {
+        'File Name': os.path.basename(file_path),
+        'Avg Closeness': avg_closeness,
+        'Avg Betweenness': avg_betweenness,
+        'Global Clustering': global_clustering,
+        'Z-scores - Closeness': closeness_z,
+        'Z-scores - Betweenness': betweenness_z,
+        'Z-scores - Clustering': clustering_z
+    }
+
+    save_results_to_file([result])
 
 def main():
     folder_path = "."  # Change this to your folder path
-    results = []
 
-    for file_name in os.listdir(folder_path):
-        if file_name == "results.txt" or not file_name.endswith(".txt"):
-            continue
+    if os.path.exists(RESULTS_FILE):
+        os.remove(RESULTS_FILE)  # Remove existing results file
 
-        file_path = os.path.join(folder_path, file_name)
-        print(f"\nAnalyzing file: {file_path}")
+    with ProcessPoolExecutor() as executor:
+        futures = [executor.submit(analyze_file, os.path.join(folder_path, file_name)) for file_name in os.listdir(folder_path)]
 
-        graph = read_graph_from_file(file_path)
-        avg_closeness, avg_betweenness, global_clustering = calculate_metrics(graph)
-        random_graphs = generate_random_graphs(graph)
-        closeness_z, betweenness_z, clustering_z = calculate_z_scores(graph, random_graphs)
-
-        results.append({
-            'File Name': file_name,
-            'Avg Closeness': avg_closeness,
-            'Avg Betweenness': avg_betweenness,
-            'Global Clustering': global_clustering,
-            'Z-scores - Closeness': closeness_z,
-            'Z-scores - Betweenness': betweenness_z,
-            'Z-scores - Clustering': clustering_z
-        })
-
-    save_results_to_file(results)
+        for future in as_completed(futures):
+            try:
+                future.result()  # This will save the result to the file
+            except Exception as e:
+                print(f"Error processing file: {e}")
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,24 @@
+| File Name |   Avg Closeness |   Avg Betweenness |   Global Clustering |   Z-scores - Closeness |   Z-scores - Betweenness |   Z-scores - Clustering |
+|:----------|----------------:|------------------:|--------------------:|-----------------------:|-------------------------:|------------------------:|
+| Cattle    |       0.0818229 |        0.00152055 |            0.133686 |              -0.758466 |                -0.677289 |                 28.8376 |
+
+| File Name |   Avg Closeness |   Avg Betweenness |   Global Clustering |   Z-scores - Closeness |   Z-scores - Betweenness |   Z-scores - Clustering |
+|:----------|----------------:|------------------:|--------------------:|-----------------------:|-------------------------:|------------------------:|
+| Rat       |         0.20885 |        0.00140392 |           0.0657914 |                2.87803 |                -0.463225 |                 95.3222 |
+
+| File Name |   Avg Closeness |   Avg Betweenness |   Global Clustering |   Z-scores - Closeness |   Z-scores - Betweenness |   Z-scores - Clustering |
+|:----------|----------------:|------------------:|--------------------:|-----------------------:|-------------------------:|------------------------:|
+| Mouse     |        0.172893 |         0.0010274 |            0.100123 |                1.67258 |                -0.391841 |                 224.004 |
+
+| File Name |   Avg Closeness |   Avg Betweenness |   Global Clustering |   Z-scores - Closeness |   Z-scores - Betweenness |   Z-scores - Clustering |
+|:----------|----------------:|------------------:|--------------------:|-----------------------:|-------------------------:|------------------------:|
+| C.elegans |        0.183504 |        0.00099014 |           0.0269285 |                1.36136 |                -0.353137 |                 67.9451 |
+
+| File Name |   Avg Closeness |   Avg Betweenness |   Global Clustering |   Z-scores - Closeness |   Z-scores - Betweenness |   Z-scores - Clustering |
+|:----------|----------------:|------------------:|--------------------:|-----------------------:|-------------------------:|------------------------:|
+| Yeast     |        0.308946 |       0.000396448 |            0.123421 |                1.36511 |               -0.0943207 |                 1176.92 |
+
+| File Name |   Avg Closeness |   Avg Betweenness |   Global Clustering |   Z-scores - Closeness |   Z-scores - Betweenness |   Z-scores - Clustering |
+|:----------|----------------:|------------------:|--------------------:|-----------------------:|-------------------------:|------------------------:|
+| Human     |         0.22764 |        0.00037686 |           0.0834311 |                2.19679 |                -0.311071 |                 461.258 |
+
