@@ -3,6 +3,7 @@ import networkx as nx
 import numpy as np
 from tabulate import tabulate
 from concurrent.futures import ProcessPoolExecutor, as_completed
+import argparse
 
 RESULTS_FILE = "results.txt"
 
@@ -44,15 +45,15 @@ def generate_random_graphs(graph, num_graphs=10):
 
     return random_graphs
 
-def save_results_to_file(results):
+def save_results_to_file(results, output_file_path):
     print("\nResults Table:")
     print(tabulate(results, headers="keys", tablefmt="grid"))  # Change "grid" to "pipe" or "plain" for different styles
 
-    with open(RESULTS_FILE, "a") as file:
+    with open(output_file_path, "a") as file:
         file.write(tabulate(results, headers="keys", tablefmt="pipe"))
         file.write("\n\n")
 
-def analyze_file(file_path):
+def analyze_file(file_path, output_file_path):
     graph = read_graph_from_file(file_path)
     avg_closeness, avg_betweenness, global_clustering = calculate_metrics(graph)
 
@@ -71,16 +72,15 @@ def analyze_file(file_path):
         'Z-scores - Clustering': clustering_z
     }
 
-    save_results_to_file([result])
+    save_results_to_file([result], output_file_path)
 
-def main():
-    folder_path = "."  # Change this to your folder path
+def main(folder_path, output_file):
 
-    if os.path.exists(RESULTS_FILE):
-        os.remove(RESULTS_FILE)  # Remove existing results file
+    if os.path.exists(output_file):
+        os.remove(output_file)  # Remove existing results file
 
     with ProcessPoolExecutor() as executor:
-        futures = [executor.submit(analyze_file, os.path.join(folder_path, file_name)) for file_name in os.listdir(folder_path)]
+        futures = [executor.submit(analyze_file, os.path.join(folder_path, file_name), output_file) for file_name in os.listdir(folder_path)]
 
         for future in as_completed(futures):
             try:
@@ -89,4 +89,9 @@ def main():
                 print(f"Error processing file: {e}")
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Process a folder of graphs")
+    parser.add_argument("-f", "--folder", help="Path to folder containing graphs")
+    parser.add_argument("-o", "--output", help="Path to output file")
+    args = parser.parse_args()
+
+    main(args.folder, args.output)

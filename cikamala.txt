@@ -1,0 +1,4 @@
+| File Name   |   Avg Closeness |   Avg Betweenness |   Global Clustering |   Z-scores - Closeness |   Z-scores - Betweenness |   Z-scores - Clustering |
+|:------------|----------------:|------------------:|--------------------:|-----------------------:|-------------------------:|------------------------:|
+| Cattle.txt  |       0.0818229 |        0.00152055 |            0.133686 |              -0.703946 |                -0.692517 |                 34.5209 |
+
