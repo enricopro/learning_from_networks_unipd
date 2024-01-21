@@ -4,8 +4,6 @@ import numpy as np
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import argparse
 
-RESULTS_FILE = "results.txt"
-
 def read_graph_from_file(file_path):
     print(f"Reading graph from file: {file_path}")
     G = nx.read_edgelist(file_path)
@@ -121,6 +119,10 @@ def main(folder_path, output_folder_path):
                 print(f"Error processing file: {e}")
 
 if __name__ == "__main__":
+    """
+        Execute as follows:
+        python3 main.py -f <path to folder containing graphs> -o <path to output folder>
+    """
     parser = argparse.ArgumentParser(description="Process a folder of graphs")
     parser.add_argument("-f", "--folder", help="Path to folder containing graphs")
     parser.add_argument("-o", "--output", help="Path to output folder")
